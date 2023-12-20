@@ -1,0 +1,46 @@
+.login {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-image: url("../../src/image/login-image.jpg");
+  /* backface-visibility: visible; */
+  background-color: rgba(189, 189, 189, 0.7);
+  scroll-behavior: smooth;
+  overflow: hidden;
+}
+.modal-container-task {
+  width: 350px;
+  height: auto;
+  padding: 3rem;
+  box-shadow: 0px 0px 4px 3px rgb(238, 234, 234);
+  border-radius: 5px;
+  top: 8rem;
+  right: 25rem;
+
+  position: absolute;
+  background-color: rgb(255, 255, 255, 0.7);
+  /* background-image: url('../../src/image/login-background.jpg'); */
+}
+.btn-task {
+  padding: 1rem 1.7rem;
+
+  border-radius: 5px;
+  background-color: #0e235f;
+}
+.head {
+  color: rgb(10, 29, 86);
+  font-size: 2rem;
+  margin-bottom: 3rem;
+}
+.body {
+  color: rgb(10, 29, 86);
+  margin-bottom: 3rem;
+}
+/* .btn-task a {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  font-size: 1rem;
+} */

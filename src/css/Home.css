@@ -1,0 +1,10 @@
+.test{
+    background-image: url("../../src/image/home-cover-image.jpg");
+    position:fixed;
+    background-size:contain;
+    background-position:top;
+    background: cover;
+    width: 100vw;
+    height: 100vh;
+
+}
