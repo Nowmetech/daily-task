@@ -32,6 +32,8 @@ function App() {
         <Route path="/editdata/:id" element={<EditTaskData/>} />
         <Route path="/adminDashboard" element={<AdminPanel/>} />
         <Route path="/adminEditPanel/:id" element={<AdminEditPanel/>} />
+
+        {/*added a comment*/}
       </Routes>
     </BrowserRouter>
     </GlobalProvider>
