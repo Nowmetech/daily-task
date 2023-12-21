@@ -2,10 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import "../css/Signup.css";
 import { useNavigate } from "react-router-dom";
-
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 function Login() {
   const nav = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(false)
   const [data, setdata] = useState({
     email: "",
     password: "null",
@@ -21,7 +22,7 @@ function Login() {
 
   const HandleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true)
     try {
       const result = await axios.post(
         "https://daily-task-api.onrender.com/user/login",
@@ -31,9 +32,11 @@ function Login() {
       console.log(result?.data?.user?.Role?.type);
       if(result?.data?.user?.Role.type === "User"){
         localStorage.setItem("token", result?.data?.token);
+        setIsLoading(false)
       nav("/taskpage");
       }else if(result?.data?.user?.Role.type === "Admin"){
         localStorage.setItem("token", result?.data?.token);
+        setIsLoading(false)
         nav("/adminDashboard");
       }else{
         alert("invalid input")
@@ -50,7 +53,14 @@ function Login() {
   };
   return (
     <>
-     
+       <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        // onClick={() => setIsLoading(false)}
+      >
+        <CircularProgress color="inherit" />
+        Loding...
+      </Backdrop>
       <div className="login"></div>
       <div className="sub sub-1">
       

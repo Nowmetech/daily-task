@@ -15,7 +15,8 @@ import TaskPage from './components/home/TaskPage';
 import TaskLists from './components/home/TaskLists';
 import { GlobalProvider } from './context/globalContext/GlobalContex';
 import EditTaskData from './components/home/EditTaskData';
-import AdminPanel from './components/AdminPanel';
+import AdminPanel from './components/admin/AdminPanel';
+import AdminEditPanel from './components/admin/AdminEditPanel';
 function App() {
   return (
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/tasklist" element={<TaskLists/>} />
         <Route path="/editdata/:id" element={<EditTaskData/>} />
         <Route path="/adminDashboard" element={<AdminPanel/>} />
+        <Route path="/adminEditPanel/:id" element={<AdminEditPanel/>} />
       </Routes>
     </BrowserRouter>
     </GlobalProvider>

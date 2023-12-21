@@ -52,6 +52,7 @@ const HandleLogout = () =>{
         // onClick={() => setIsLoading(false)}
       >
         <CircularProgress color="inherit" />
+        Lodding...
       </Backdrop>
       
      <Table striped bordered hover variant="dark">

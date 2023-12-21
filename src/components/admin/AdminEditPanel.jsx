@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import "../../css/Task.css";
-import axios from "axios";
-// import Button from 'react-bootstrap/Button';
+
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
-// import { type } from '@testing-library/user-event/dist/type'
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import moment from 'moment';
 
 
-function Task() {
-  const link = useNavigate()
+function AdminEditPanel() {
+    const {id} = useParams()
+    const [data, setData] = useState([])
+    const link = useNavigate()
   const [getdata, setGetData] = useState([]);
   const [work, setWork] = useState([]);
   const [status, setStatus] = useState([]);
-  const [isLoading, setIsLoading] = useState(false)
+//   const [editTask, setEditTask] = useState({})
 
   const [inputValue, setInputValue] = useState({
     project_id: 0,
@@ -28,6 +28,39 @@ function Task() {
     comments: "",
     attachment_url: "",
   });
+    useEffect(()=>{
+        const token = localStorage.getItem("token")
+    axios.get(`https://daily-task-api.onrender.com/task/getTaskAsAdmin`, {
+        headers:{
+            Authorization: token
+        }
+    })
+    .then((res)=>{
+     
+        console.log(res?.data?.data[0])
+        setData(res?.data?.data)
+        setInputValue({
+            project_id: res?.data?.data[0].project_id || 0,
+            designation_id: res?.data?.data[0].designation_id || 0,
+            task_details: res?.data?.data[0].task_details || "",
+            start_date: res?.data?.data[0].start_date || "",
+            estimate_hours: res?.data?.data[0].estimate_hours || 0,
+            status_id: res?.data?.data[0].status_id || 0,
+            hour_taken: res?.data?.data[0].hour_taken || 0,
+            end_date: res?.data?.data[0].end_date || null,
+            comments: res?.data?.data[0].comments || "",
+            attachment_url: res?.data?.data[0].attachment_url || "",
+          });
+       
+    })
+    .catch((err) =>{
+     
+        console.log(err)
+    })
+    },[])
+console.log(data)
+//
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -78,7 +111,7 @@ function Task() {
   }, []);
   
   const handleProjectChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target;    
     const numericValue =
       name.trim() === "project_id" ||
       name.trim() === "designation_id" ||
@@ -88,7 +121,7 @@ function Task() {
         ? parseInt(value, 10)
         : value;
 
-    setInputValue((inputValue) => ({
+        setInputValue((inputValue) => ({
       ...inputValue,
       [name]: numericValue,
     }));
@@ -97,39 +130,28 @@ function Task() {
 
   const HandleSubmitTask = (e) => {   
     e.preventDefault();
-    setIsLoading(true)
     const token = localStorage.getItem("token");
     axios
-      .post("https://daily-task-api.onrender.com/task/create", inputValue, {
+      .post(`https://daily-task-api.onrender.com/task/editTask/${id}`, inputValue, {
         headers: {
           Authorization: token,
         },
       })
       .then((res) => {
-        setIsLoading(false)
         console.log(res);
-        link('/tasklist')
+        link('/adminDashboard')
         // setStatus(res?.data?.data)
       })
       .catch((err) => {
-        setIsLoading(false)
         console.log(err);
       });
   };
 
-  //   console.log(typeof(inputValue))
+
 
   return (
     <>
-    <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLoading}
-        // onClick={() => setIsLoading(false)}
-      > 
-        <CircularProgress color="inherit" />
-        Loding...
-      </Backdrop>
-      <div className="main-1 "></div>
+     <div className="main-1 "></div>
       <div className=" sub-1">
         <div className="modal-container-2 ">
           {/* <button className='btn btn-info'><a href='/' style={{textDecoration:"none"}}>back</a></button>  */}
@@ -145,6 +167,7 @@ function Task() {
               className="dropdown-1"
               name="project_id"
               onChange={handleProjectChange}
+              value={inputValue.project_id}
             >
               {/* <option value="">Other</option> */}
               {getdata.map((item) => (
@@ -165,6 +188,7 @@ function Task() {
               className="dropdown-1"
               name="designation_id"
               onChange={handleProjectChange}
+              value={inputValue.designation_id}
             >
               <option className="drop-item" value="">
                 Write your Answer
@@ -185,7 +209,7 @@ function Task() {
         <Form.Label>Task Details</Form.Label>
         <Form.Control type="text" name="task_details"
               placeholder="Enter your answer"
-              onChange={handleProjectChange} />
+              onChange={handleProjectChange}  value={inputValue.task_details}/>
         <Form.Text className="text-muted">
           {/* We'll never share your email with anyone else. */}
         </Form.Text>
@@ -194,10 +218,12 @@ function Task() {
             <label>Start Date</label>
             <input
               className="input-sort"
-              type="date"
+              type="date"    
               name="start_date"
               onChange={handleProjectChange}
+              value={moment(inputValue.start_date).format("YYYY-MM-DD") }
               placeholder="Please input Date"
+             
             />
 
             <label>Estimate Hours</label>
@@ -206,6 +232,7 @@ function Task() {
               type="number"
               name="estimate_hours"
               onChange={handleProjectChange}
+              value={inputValue.estimate_hours}
               placeholder="Please enter a number less than or equal to 24"
             />
 
@@ -214,6 +241,7 @@ function Task() {
               className="dropdown-1"
               name="status_id"
               onChange={handleProjectChange}
+              value={inputValue.status_id}
             >
               <option className="drop-item" valu="">
                 Write your Answer
@@ -227,9 +255,10 @@ function Task() {
             <label>Hour Taken</label>
             <input
               className="input-sort"
-              type="text"
+              type="number"
               name="hour_taken"
               onChange={handleProjectChange}
+              value={inputValue.hour_taken}
               placeholder="Please enter a number less than or equal to 30"
             />
 
@@ -239,7 +268,9 @@ function Task() {
               type="date"
               name="end_date"
               onChange={handleProjectChange}
+              value={inputValue.end_date}
               placeholder="Please input Date"
+
             />
 
             <label>Comments/Issues</label>
@@ -247,6 +278,7 @@ function Task() {
               name="comments"
               onChange={handleProjectChange}
               placeholder="Enter your answer"
+              value={inputValue.comments}
             />
 
             <label>Attachment </label>
@@ -260,6 +292,7 @@ function Task() {
                 type="file"
                 name="attachment_url"
                 onChange={handleProjectChange}
+                // value={data.attachment_url}
               />
             </div>
 
@@ -268,9 +301,8 @@ function Task() {
             </button>
           </form>
         </div>
-      </div>
-    </>
-  );
+      </div></>
+  )
 }
 
-export default Task;
+export default AdminEditPanel
