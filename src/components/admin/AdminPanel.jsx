@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Table from 'react-bootstrap/Table';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { DatePicker, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 function AdminPanel() {
+  const {id} = useParams()
   const { RangePicker } = DatePicker;
   const link = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -62,6 +63,28 @@ function AdminPanel() {
    link('/login')
 
    }
+
+   const HandleDelete = (id) =>{
+    setIsLoading(true)
+    const token = localStorage.getItem("token")
+    axios.post(`https://daily-task-api.onrender.com/task/deleteTask/${id}`,{},  {
+      headers:{
+        Authorization: token
+    }
+    }).then((res)=>{
+      window.location.reload()
+       console.log(res)      
+       setIsLoading(false)
+       
+    })    
+    .catch((error) => {
+      console.log(error)
+      setIsLoading(false)
+    }) 
+    
+   
+   }
+  
 
   return (
    <>
@@ -125,7 +148,7 @@ function AdminPanel() {
                  <td>{item.comments}</td>
                  <td>
                 <Link to={`/adminEditPanel/${item.id}`}> <button className='btn btn-info mx-3'>Edit</button></Link>
-                  <button className='btn btn-danger'>Delete</button>
+                <button className='btn btn-danger' onClick={()=>HandleDelete(item.id)}>Delete</button>
                   
                  </td>
                  

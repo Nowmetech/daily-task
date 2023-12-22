@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import '../../css/Signup.css'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Signup() {
 
 const nav = useNavigate()
-
+const [isLoading, setIsLoading] = useState(false)
 
     const[data, setData] = useState({
         firstName : "",
@@ -35,6 +37,7 @@ const nav = useNavigate()
 
     // submit the value
     const HandleSubmit = (e) =>{
+      setIsLoading(true)
     e.preventDefault();
       const { firstName, lastName, email, password} = data
       console.log(data)
@@ -53,18 +56,27 @@ const nav = useNavigate()
       
          axios.post('https://daily-task-api.onrender.com/user/signup', data)      
        .then((res)=>{
+        setIsLoading(false)
             console.log(res)
             nav('/login')
         })
        .catch((error)=>{
           console.log("error")
+          setIsLoading(false)
        })  
     //   console.log("click")
    
 }
   return (
   <>
-
+<Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        // onClick={() => setIsLoading(false)}
+      >
+        <CircularProgress color="inherit" />
+        Lodding...
+      </Backdrop>
 <div className='main-3 '></div>
     
     <div className='sub sub-1'>
