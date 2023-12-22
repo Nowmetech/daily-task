@@ -30,35 +30,35 @@ function AdminEditPanel() {
   });
     useEffect(()=>{
         const token = localStorage.getItem("token")
-    axios.get(`https://daily-task-api.onrender.com/task/getTaskAsAdmin`, {
+    axios.get(`https://daily-task-api.onrender.com/task/getTaskById/${id}`, {
         headers:{
             Authorization: token
         }
     })
     .then((res)=>{
-     
-        console.log(res?.data?.data[0])
-        setData(res?.data?.data)
+
+         console.log(res?.data?.task)
+        setData(res?.data?.task)
         setInputValue({
-            project_id: res?.data?.data[0].project_id || 0,
-            designation_id: res?.data?.data[0].designation_id || 0,
-            task_details: res?.data?.data[0].task_details || "",
-            start_date: res?.data?.data[0].start_date || "",
-            estimate_hours: res?.data?.data[0].estimate_hours || 0,
-            status_id: res?.data?.data[0].status_id || 0,
-            hour_taken: res?.data?.data[0].hour_taken || 0,
-            end_date: res?.data?.data[0].end_date || null,
-            comments: res?.data?.data[0].comments || "",
-            attachment_url: res?.data?.data[0].attachment_url || "",
-          });
-       
+            project_id: res?.data?.task.project_id || 0,
+            designation_id: res?.data?.task.designation_id || 0,
+            task_details: res?.data?.task.task_details || "",
+            start_date: res?.data?.task.start_date || "",
+            estimate_hours: res?.data?.task.estimate_hours || 0,
+            status_id: res?.data?.task.status_id || 0,
+            hour_taken: res?.data?.task.hour_taken || 0,
+            end_date: res?.data?.task.end_date || null,
+            comments: res?.data?.task.comments || "",
+            attachment_url: res?.data?.task.attachment_url || "",
+        });
+
     })
     .catch((err) =>{
      
         console.log(err)
     })
     },[])
-console.log(data)
+// console.log(data)
 //
 
 

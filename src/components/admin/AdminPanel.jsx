@@ -85,11 +85,13 @@ function AdminPanel() {
     </Space>
    </div>
    <button onClick={HandleLogout} className='btn btn-primary mx-2 my-1'>Logout</button>
-   <Table striped bordered hover variant="dark" className='opacity-75'>
+       <input className=" my-3  mr-sm-2  " type="search" placeholder="Search Submitter" onChange={Userfilter}  />
+
+       <Table striped bordered hover variant="dark" className='opacity-75'>
       <thead>
       
         <tr>
-        <input className=" my-3  mr-sm-2  " type="search" placeholder="Search Submitter" onChange={Userfilter}     />
+
         <th>Id</th>
         <th>User</th>
           <th>Project</th>
