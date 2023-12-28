@@ -7,7 +7,7 @@ import { GlobalContext } from '../../context/globalContext/GlobalContex';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import "../../css/Home.css"
+import "../../css/Signup.css"
 
 
 
@@ -62,9 +62,8 @@ const stripHtmlTags = (htmlString) => {
 };
 //pagination
 const [currentPage, setCurrentPage] = useState(1)
-
-const postPerPage = 5
-
+const [rowPerPage, setRowPerPage] = useState(10); 
+const postPerPage = rowPerPage;
 const lastIndex = currentPage * postPerPage
 const firstIndex = lastIndex - postPerPage
 const record = getTask.slice(firstIndex, lastIndex)
@@ -97,7 +96,8 @@ const nextPage = ()=>{
         <CircularProgress color="inherit" />
         Lodding...
       </Backdrop>
-      <div className='login'>
+      <div className='login'> </div>
+      <div style={{position:"absolute", width:"100%"}} >
       <div className='avatar'>
        <div className='round'>
        {user.firstName}{user.lastName}       
@@ -180,8 +180,20 @@ const nextPage = ()=>{
             <a href="#" onClick={nextPage} className="page-link">Next</a>
           </li>
         </ul>
-    
+        <div>
+      <label className="bg-white">Rows per Page:</label>
+      <select
+        value={rowPerPage}
+        onChange={(e) => setRowPerPage(parseInt(e.target.value))}
+      >
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </select>
     </div>
+    </div>
+   
     </>
     
     
