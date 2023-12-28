@@ -8,3 +8,9 @@
     height: 100vh;
 
 }
+.avatar{
+    display:flex;
+    align-items: baseline;
+    margin: 1rem;
+    gap: 0.6rem;
+}

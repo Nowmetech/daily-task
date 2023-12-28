@@ -5,7 +5,8 @@ import axios from 'axios'
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
-
+import { useRef } from "react";
+import { HtmlEditor, Inject, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 
 function AdminEditPanel() {
     const {id} = useParams()
@@ -15,7 +16,7 @@ function AdminEditPanel() {
   const [work, setWork] = useState([]);
   const [status, setStatus] = useState([]);
 //   const [editTask, setEditTask] = useState({})
-
+const EditorText = useRef({});
   const [inputValue, setInputValue] = useState({
     project_id: 0,
     designation_id: 0,
@@ -59,7 +60,16 @@ function AdminEditPanel() {
     })
     },[])
 // console.log(data)
-//
+//toolbar
+const toolbarSettings = {
+  items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
+      'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
+      'LowerCase', 'UpperCase', '|',
+      'Formats', 'Alignments', 'OrderedList', 'UnorderedList',
+      'Outdent', 'Indent', '|',
+      'CreateLink', 'Image', '|', 'ClearFormat', 'Print',
+      'SourceCode', 'FullScreen', '|', 'Undo', 'Redo']
+};
 
 
   useEffect(() => {
@@ -130,9 +140,14 @@ function AdminEditPanel() {
 
   const HandleSubmitTask = (e) => {   
     e.preventDefault();
+    const editorContent = EditorText.current && EditorText.current.value;
+    const updatedInputValue = {
+      ...inputValue,
+      task_details: editorContent,
+    };
     const token = localStorage.getItem("token");
     axios
-      .post(`https://daily-task-api.onrender.com/task/editTask/${id}`, inputValue, {
+      .post(`https://daily-task-api.onrender.com/task/editTask/${id}`, updatedInputValue, {
         headers: {
           Authorization: token,
         },
@@ -205,16 +220,24 @@ function AdminEditPanel() {
               placeholder="Enter your answer"
               onChange={handleProjectChange}
             /> */}
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            {/* <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Task Details</Form.Label>
         <Form.Control type="text" name="task_details"
               placeholder="Enter your answer"
               onChange={handleProjectChange}  value={inputValue.task_details}/>
         <Form.Text className="text-muted">
-          {/* We'll never share your email with anyone else. */}
+          {/* We'll never share your email with anyone else. 
         </Form.Text>
-      </Form.Group>
-
+      </Form.Group> */}
+       <Form.Label>Task Details</Form.Label>
+         <RichTextEditorComponent
+  height={200}
+  toolbarSettings={toolbarSettings}
+  ref={EditorText}
+  value={inputValue.task_details}
+>
+  <Inject services={[Toolbar, HtmlEditor]} />
+</RichTextEditorComponent>
             <label>Start Date</label>
             <input
               className="input-sort"
@@ -295,10 +318,13 @@ function AdminEditPanel() {
                 // value={data.attachment_url}
               />
             </div>
-
-            <button className="btn-submit" type="submit">
+            <div className='d-flex gap-4'>
+      <button className="btn btn-primary" type="submit">   
               Submit
             </button>
+        <button className="btn btn-danger"><a href="/adminDashboard" className="text-decoration-none text-white">Cancel</a>
+        </button>
+        </div>
           </form>
         </div>
       </div></>

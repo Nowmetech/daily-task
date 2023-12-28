@@ -7,13 +7,26 @@ import { GlobalContext } from '../../context/globalContext/GlobalContex';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import "../../css/Home.css"
+
+
+
+
 function TaskLists() {
   const link = useNavigate()
 // const {getdata} = useContext(GlobalContext)
 const [isLoading, setIsLoading] = useState(false)
 //  console.log(getdata)
 const[getTask, setGetTask] = useState([])
-// const [ filter, setFilter] = useState([])
+const [ userName, setuserName] = useState({
+  firstName:'',
+  lastName:''
+})
+const [ user, setUser] = useState({
+  firstName:'',
+  lastName:'',
+  email:""
+})
 useEffect(()=>{
 setIsLoading(true)
     const token = localStorage.getItem("token")
@@ -24,8 +37,11 @@ setIsLoading(true)
     })
     .then((res)=>{
       setIsLoading(false)
-        console.log(res?.data?.tasks[0])
+        console.log(res?.data?.tasks)
         setGetTask(res?.data?.tasks)
+        setuserName({...userName,firstName:res?.data?.tasks[0].User.firstName, lastName:res?.data?.tasks[0].User.lastName, email:res?.data?.tasks[0].User.email})
+        setUser({...user,firstName:res?.data?.tasks[0].User.firstName[0],lastName:res?.data?.tasks[0].User.lastName[0]})
+        // setUserLastName()
     })
     .catch((err) =>{
       setIsLoading(false)
@@ -40,8 +56,35 @@ const HandleLogout = () =>{
   console.log("logout")
   link('/login')
 }
+const stripHtmlTags = (htmlString) => {
+  const doc = new DOMParser().parseFromString(htmlString, 'text/html');
+  return doc.body.textContent || '';
+};
+//pagination
+const [currentPage, setCurrentPage] = useState(1)
+
+const postPerPage = 5
+
+const lastIndex = currentPage * postPerPage
+const firstIndex = lastIndex - postPerPage
+const record = getTask.slice(firstIndex, lastIndex)
+const newPage = Math.ceil(getTask.length / postPerPage)
+const numbers = [...Array(newPage + 1).keys()].slice(1)
 
 
+const prevPage = ()=>{
+ if(currentPage !== 1){
+  setCurrentPage(currentPage - 1)
+ }
+}
+const changePage = (id) =>{
+  setCurrentPage(id)
+}
+const nextPage = ()=>{
+  if(currentPage !== newPage){
+    setCurrentPage(currentPage + 1)
+   }
+}
   return (
 
     <>
@@ -54,10 +97,22 @@ const HandleLogout = () =>{
         <CircularProgress color="inherit" />
         Lodding...
       </Backdrop>
-      
-     <Table striped bordered hover variant="dark">
+      <div className='login'>
+      <div className='avatar'>
+       <div className='round'>
+       {user.firstName}{user.lastName}       
+       </div>
+  <div className='d-flex gap-1'>
+  <h6 className='text-white'>{userName.firstName}</h6>
+        <h6 className='text-white'>{userName.lastName}</h6>
+  </div>      
+   </div>
+   <h6 className='text-white mx-5'>{userName.email}</h6>
+   
+     <Table striped bordered hover variant="secondary">
       
       <thead>
+  
         <button onClick={HandleLogout} className='btn btn-primary m-4'>Logout</button>
         <tr>
           <th>Id</th>
@@ -77,14 +132,14 @@ const HandleLogout = () =>{
      
         
           {
-            getTask.map((item, index)=>(
+            record.map((item, index)=>(
                 <> <tbody>
                  <tr key={item.id}>
                   <td>{index + 1}</td>
                  <td>{item.Project?.name}</td>
                  <td>{item.Designation.name}</td>
                 
-                 <td>{item.task_details}</td>
+                 <td>{stripHtmlTags(item.task_details)}</td>
                  <td>{`${item.estimate_hours}hr`}</td>
                  <td>{item.Status?.name}</td>
                  <td>{item.hour_taken}</td>
@@ -111,6 +166,22 @@ const HandleLogout = () =>{
        
       
     </Table>
+    <ul className="pagination">
+          <li className="page-item">
+            <a href="#" onClick={prevPage} className="page-link">prev</a>
+          </li>
+           {
+            numbers.map((number, index)=>(
+              <li key={index}  className='page-item'><a href="#" className="page-link" onClick={()=> changePage(number)}>{number}</a></li>
+
+            ))
+           }
+            <li className="page-item">
+            <a href="#" onClick={nextPage} className="page-link">Next</a>
+          </li>
+        </ul>
+    
+    </div>
     </>
     
     

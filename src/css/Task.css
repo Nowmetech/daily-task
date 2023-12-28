@@ -132,3 +132,14 @@
    cursor: pointer;
    border: none;
   }
+.round{
+  width: 40px;
+  height: 40px;
+  background-color: rgb(159, 57, 242);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: aliceblue;
+  font-weight: 500;
+}

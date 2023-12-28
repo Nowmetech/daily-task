@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 // import { type } from '@testing-library/user-event/dist/type'
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { HtmlEditor, Inject, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import Link from "antd/es/typography/Link";
+import moment from "moment";
+import { useRef } from "react";
 
 
 function Task() {
@@ -15,12 +19,23 @@ function Task() {
   const [work, setWork] = useState([]);
   const [status, setStatus] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
+  const EditorText = useRef({});
+  
+  const toolbarSettings = {
+    items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
+        'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
+        'LowerCase', 'UpperCase', '|',
+        'Formats', 'Alignments', 'OrderedList', 'UnorderedList',
+        'Outdent', 'Indent', '|',
+        'CreateLink', 'Image', '|', 'ClearFormat', 'Print',
+        'SourceCode', 'FullScreen', '|', 'Undo', 'Redo']
+};
 
   const [inputValue, setInputValue] = useState({
     project_id: 0,
     designation_id: 0,
     task_details: "",
-    start_date: "",
+    start_date: moment(Date.now()).format('YYYY-MM-DD'),
     estimate_hours: 0,
     status_id: 0,
     hour_taken: 0,
@@ -98,9 +113,14 @@ function Task() {
   const HandleSubmitTask = (e) => {   
     e.preventDefault();
     setIsLoading(true)
+    const editorContent = EditorText.current && EditorText.current.value;
+    const updatedInputValue = {
+      ...inputValue,
+      task_details: editorContent,
+    };
     const token = localStorage.getItem("token");
     axios
-      .post("https://daily-task-api.onrender.com/task/create", inputValue, {
+      .post("https://daily-task-api.onrender.com/task/create", updatedInputValue,{
         headers: {
           Authorization: token,
         },
@@ -157,7 +177,8 @@ function Task() {
             <input
               className="input-sort"
               type="text"
-              onChange={handleProjectChange}
+              onChange={(e)=> console.log(e.target.value)}
+              // onChange={handleProjectChange}
               placeholder="Enter your answer"
             />
             <label>Work in</label>
@@ -181,16 +202,25 @@ function Task() {
               placeholder="Enter your answer"
               onChange={handleProjectChange}
             /> */}
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            {/* <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Task Details</Form.Label>
         <Form.Control type="text" name="task_details"
               placeholder="Enter your answer"
               onChange={handleProjectChange} />
         <Form.Text className="text-muted">
-          {/* We'll never share your email with anyone else. */}
+           {/* We'll never share your email with anyone else.  
         </Form.Text>
       </Form.Group>
-
+       */}
+        <Form.Label>Task Details</Form.Label>
+       <RichTextEditorComponent
+  height={200}
+  toolbarSettings={toolbarSettings}
+  ref={EditorText}
+>
+  <Inject services={[Toolbar, HtmlEditor]} />
+</RichTextEditorComponent>
+      
             <label>Start Date</label>
             <input
               className="input-sort"
@@ -198,6 +228,7 @@ function Task() {
               name="start_date"
               onChange={handleProjectChange}
               placeholder="Please input Date"
+              defaultValue={inputValue.start_date}
             />
 
             <label>Estimate Hours</label>
@@ -206,7 +237,9 @@ function Task() {
               type="number"
               name="estimate_hours"
               onChange={handleProjectChange}
-              placeholder="Please enter a number less than or equal to 24"
+              placeholder="Please enter a number less than or equal to 24"  
+              min={0}   
+              
             />
 
             <label>Status</label>
@@ -263,9 +296,13 @@ function Task() {
               />
             </div>
 
-            <button className="btn-submit" type="submit">
+           <div className="d-flex gap-4">
+           <button className="btn btn-primary" type="submit">
               Submit
             </button>
+          <button className="btn btn-danger"><a href="/taskpage" className="text-decoration-none text-white">Cancel</a></button>
+           </div>
+
           </form>
         </div>
       </div>
