@@ -172,7 +172,7 @@ const nextPage = ()=>{
           </li>
            {
             numbers.map((number, index)=>(
-              <li key={index}  className='page-item'><a href="#" className="page-link" onClick={()=> changePage(number)}>{number}</a></li>
+              <li key={index}  className={`page-item${ currentPage === newPage ? "active" : ""}`}><a href="#" className="page-link" onClick={()=> changePage(number)}>{number}</a></li>
 
             ))
            }

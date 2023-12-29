@@ -9,6 +9,17 @@
     background-color: rgba(189, 189, 189, 0.7);
     scroll-behavior: smooth;
   }
+  .main-main-1{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-image: url("../../src/image/home-cover-image.jpg");
+    /* backface-visibility: visible; */
+    background-color: rgba(189, 189, 189, 0.7);
+    scroll-behavior: smooth;
+  }
   .sub-1 {
     display: flex;
     justify-content: center;

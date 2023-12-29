@@ -8,7 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import moment from "moment";
 import { DatePicker, Space } from "antd";
 import { useNavigate } from "react-router-dom";
-import { Dayjs } from "dayjs";
+// import { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 
 
@@ -56,12 +56,14 @@ function AdminPanel() {
 
   //date filter
   const rangePresets = [
-    { label: "Today", value: [dayjs().add(0, "d"), dayjs()] },
+    { label: "Today", value: [dayjs().add(0,"d"), dayjs()] },
     { label: "Yesterday", value: [dayjs().add(-1, "d"), dayjs()] },
     { label: "Last 7 Days", value: [dayjs().add(-7, "d"), dayjs()] },
     { label: "Last 14 Days", value: [dayjs().add(-14, "d"), dayjs()] },
     { label: "Last 30 Days", value: [dayjs().add(-30, "d"), dayjs()] },
   ];
+
+  
 
   const handleDateChange = (dates, preset) => {
     // Make sure to format the dates consistently
@@ -71,21 +73,25 @@ function AdminPanel() {
 
     // Calculate start date based on the selected preset
     const startDate =
-      preset && preset.value && preset.value[0]
-        ? preset.value[0].format("YYYY-MM-DD")
-        : null;
+    preset && preset.value && preset.value[0]
+    ? dayjs().format("YYYY-MM-DD")
+    : null;
 
     // Filter records based on the selected date range or preset
     setRecord(
       getTask?.filter((task) => {
         const taskStartDate = moment(task.start_date);
         const taskEndDate = moment(task.end_date);
-
+        if (preset && preset.label === "Today") {
+        
+          return taskStartDate.isSameOrAfter(formattedDates[0]) && taskEndDate.isSameOrBefore(formattedDates[0]);
+        }
         return (
+          
           (startDate &&
             taskStartDate.isBetween(
-              startDate,
-              formattedDates[1],
+              startDate,             
+              formattedDates[0],              
               null,
               "[]"
             )) ||
@@ -102,8 +108,8 @@ function AdminPanel() {
             "[]"
           ) ||
           (taskStartDate.isBefore(formattedDates[0]) &&
-            taskEndDate.isAfter(formattedDates[1]))
-        );
+          taskEndDate.isAfter(formattedDates[1]))
+      );
       })
     );
   };
@@ -204,16 +210,16 @@ const stripHtmlTags = (htmlString) => {
               <th>Project</th>
               <th>Work in</th>
               <th>Task Details</th>
+              <th>Start Date</th>
               <th>Estimate hours</th>
               <th>Status</th>
-              <th>Hour taken</th>
-              <th>Start Date</th>
+              <th>Hour taken</th>              
               <th>End Date</th>
               <th>Comment/issue</th>
               <th>Action</th>
             </tr>
           </thead>
-          {getTask && records && record?.map((item, index) => (
+          {record?.map((item, index) => (
             <>
              
               <tbody>
@@ -235,13 +241,12 @@ const stripHtmlTags = (htmlString) => {
                   <td>{item.Designation.name}</td>
 
                   <td>{stripHtmlTags(item.task_details)}</td>
+                  <td>{moment(item.start_date).format("DD-MM-YYYY")}</td>
                   <td>{`${item.estimate_hours}hr`}</td>
                   <td>{item.Status?.name}</td>
-                  <td>{item.hour_taken}</td>
-                  <td>{moment(item.start_date).format("DD-MM-YYYY")}</td>
+                  <td>{item.hour_taken}</td>                 
                   <td>{moment(item.end_date).format("DD-MM-YYYY" || "0")}</td>
-                  <td>{item.comments}</td>
-                  <td>
+                  <td>{item.comments}</td>                  <td>
                     <Link to={`/adminEditPanel/${item.id}`}>
                       {" "}
                       <button className="btn btn-info mx-3">Edit</button>
@@ -264,7 +269,7 @@ const stripHtmlTags = (htmlString) => {
           </li>
            {
             numbers.map((number, index)=>(
-              <li key={index} className="page-item"><a href="#" className="page-link" onClick={()=> changePage(number)}>{number}</a></li>
+              <li key={index} className={`page-item${ currentPage === newPage ? "active" : ""}`}><a href="#" className="page-link" onClick={()=> changePage(number)}>{number}</a></li>
 
             ))
            }

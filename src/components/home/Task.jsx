@@ -149,7 +149,7 @@ function Task() {
         <CircularProgress color="inherit" />
         Loding...
       </Backdrop>
-      <div className="main-1 "></div>
+      <div className="main-main-1 "></div>
       <div className=" sub-1">
         <div className="modal-container-2 ">
           {/* <button className='btn btn-info'><a href='/' style={{textDecoration:"none"}}>back</a></button>  */}
