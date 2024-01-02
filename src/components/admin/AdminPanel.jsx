@@ -84,7 +84,7 @@ function AdminPanel() {
         const taskEndDate = moment(task.end_date);
         if (preset && preset.label === "Today") {
         
-          return taskStartDate.isSameOrAfter(formattedDates[0]) && taskEndDate.isSameOrBefore(formattedDates[0]);
+          return taskStartDate.isSameOrAfter(formattedDates[0]) ;
         }
         return (
           

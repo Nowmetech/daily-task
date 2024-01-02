@@ -21,6 +21,7 @@ function Task() {
   const [isLoading, setIsLoading] = useState(false)
   const EditorText = useRef({});
   
+  
   const toolbarSettings = {
     items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
         'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
@@ -84,8 +85,9 @@ function Task() {
         },
       })
       .then((res) => {
-        // console.log(res?.data?.data)
+        // console.log(res?.data?.data[0].id)
         setStatus(res?.data?.data);
+        
       })
       .catch((err) => {
         console.log(err);
@@ -257,23 +259,33 @@ function Task() {
                 </option>
               ))}
             </select>
-            <label>Hour Taken</label>
-            <input
-              className="input-sort"
-              type="text"
-              name="hour_taken"
-              onChange={handleProjectChange}
-              placeholder="Please enter a number less than or equal to 30"
-            />
-
-            <label>End Date</label>
-            <input
-              className="input-sort"
-              type="date"
-              name="end_date"
-              onChange={handleProjectChange}
-              placeholder="Please input Date"
-            />
+          {
+             inputValue.status_id === 1 ? (
+                <div>
+                  <label>Hour Taken</label>
+                <input
+                  className="input-sort"
+                  type="text"
+                  name="hour_taken"
+                  onChange={handleProjectChange}
+                  placeholder="Please enter a number less than or equal to 30"
+                />
+              
+                <label>End Date</label>
+                <input
+                  className="input-sort"
+                  type="date"
+                  name="end_date"
+                  onChange={handleProjectChange}
+                  placeholder="Please input Date"
+                />
+                </div>
+              )  : ""  
+            
+              
+              
+            }
+           
 
             <label>Comments/Issues</label>
             <input
